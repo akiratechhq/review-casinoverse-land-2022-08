@@ -1,0 +1,11 @@
+{
+    "project_name": "Project name",
+    "client_name": "Client name",
+    "review_period": "2 weeks",
+    "date_interval": "October 15 to November 15, 2020",
+    "person_days": "5",
+    "template": "./Readme.md.mustache",
+    "date": "August 2022",
+    "commit_hash": "91140addb06bf9df3ad3ed38ea0509406c0eafb9",
+    "source_repository": "git@github.com:casinometaverse/casinoverse-land.git"
+}

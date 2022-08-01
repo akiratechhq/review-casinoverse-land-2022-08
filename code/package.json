@@ -1,0 +1,42 @@
+{
+  "name": "casinoverse-land",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "hardhat test",
+    "generate:merkleroot": "node merkle-tree-script/merkletree.js",
+    "clean:compile": "hardhat clean && hardhat compile",
+    "local:chain": "hardhat node",
+    "deploy:local": "hardhat run --network localhost scripts/deploy.js",
+    "deploy:rinkeby": "hardhat run --network rinkeby scripts/deploy.js",
+    "deploy:ropsten": "hardhat run --network ropsten scripts/deploy.js",
+    "verify:rinkeby": "hardhat verify --network rinkeby --constructor-args utils/constructor-args.js",
+    "verify:ropsten": "hardhat verify --network ropsten --constructor-args utils/constructor-args.js",
+    "console:local": "hardhat --network localhost console"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/casinometaverse/casinoverse-land.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/casinometaverse/casinoverse-land/issues"
+  },
+  "homepage": "https://github.com/casinometaverse/casinoverse-land#readme",
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.0.6",
+    "@nomiclabs/hardhat-etherscan": "^3.1.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@openzeppelin/contracts": "^4.7.0",
+    "chai": "^4.3.6",
+    "csvtojson": "^2.0.10",
+    "dotenv": "^16.0.1",
+    "ethers": "^5.6.9",
+    "hardhat": "^2.9.9",
+    "keccak256": "^1.0.6",
+    "merkletreejs": "^0.2.32"
+  }
+}

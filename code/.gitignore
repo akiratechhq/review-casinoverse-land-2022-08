@@ -1,0 +1,10 @@
+/node_modules
+
+
+# misc
+/cache
+/artifacts
+/merkletree/wallet-addresses-proofs.txt
+
+# config
+.env
