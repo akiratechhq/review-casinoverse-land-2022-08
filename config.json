@@ -1,11 +1,12 @@
 {
-    "project_name": "Project name",
-    "client_name": "Client name",
-    "review_period": "2 weeks",
-    "date_interval": "October 15 to November 15, 2020",
-    "person_days": "5",
-    "template": "./Readme.md.mustache",
-    "date": "August 2022",
+    "client_name": "Casino Metaverse",
     "commit_hash": "91140addb06bf9df3ad3ed38ea0509406c0eafb9",
-    "source_repository": "git@github.com:casinometaverse/casinoverse-land.git"
+    "date": "August 2022",
+    "date_interval": "August the 1st to August the 5th, 2022",
+    "issues": [],
+    "person_days": "5",
+    "project_name": "Casinoverse Land",
+    "review_period": "1 week",
+    "source_repository": "git@github.com:casinometaverse/casinoverse-land.git",
+    "template": "./Readme.md.mustache"
 }
