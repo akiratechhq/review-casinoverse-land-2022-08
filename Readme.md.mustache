@@ -30,11 +30,13 @@ The review was conducted over the course of **{{review_period}}** from **{{date_
 
 ### Week 1
 
-During the first week, we ...
+During the first week, we 
 
-### Week 2
-
-The second week was ...
+- review code and start drafting some initial issues
+- create a Fisher Yates proof of concept
+- set up a meeting to discuss the issues
+- work on the report
+- present report
 
 ## Scope
 
@@ -80,7 +82,7 @@ Sūrya is a utility tool for smart contract systems. It provides a number of vis
 
 |  File Name  |  SHA-1 Hash  |
 |-------------|--------------|
-| code/contracts/Land.sol | cf07001a2f52228bcb3f14607b8f2ad3b9820dd0 |
+| ./code/contracts/Land.sol | a326ec1307afd3a679ceaddaca7ecba5b73d9733 |
 
 
 ### Contracts Description Table
@@ -90,23 +92,34 @@ Sūrya is a utility tool for smart contract systems. It provides a number of vis
 |:----------:|:-------------------:|:----------------:|:----------------:|:---------------:|
 |     └      |  **Function Name**  |  **Visibility**  |  **Mutability**  |  **Modifiers**  |
 ||||||
-| **Land** | Implementation | ERC721, ReentrancyGuard, Ownable, Pausable |||
+| **Land** | Implementation | ERC721, ERC2981, ReentrancyGuard, Ownable, Pausable |||
 | └ | <Constructor> | Public ❗️ | 🛑  | ERC721 |
 | └ | setPreviewURI | External ❗️ | 🛑  | onlyOwner |
-| └ | revealNFT | External ❗️ | 🛑  | onlyOwner |
-| └ | mint | Public ❗️ |  💵 | whenNotPaused isWhitelisted notCap isValidAmount |
-| └ | setMintPrice | Public ❗️ | 🛑  | onlyOwner |
-| └ | setWithdrawalRecipient | Public ❗️ | 🛑  | onlyOwner |
+| └ | setMaxMintPerAddress | External ❗️ | 🛑  | onlyOwner |
+| └ | mint | External ❗️ |  💵 | whenNotPaused isCallerValid isTotalMintedExceedsMaxSupply isValidAmount isNFTBalanceExceedsMaxMintPerAddress isWhitelisted |
+| └ | batchMint | External ❗️ |  💵 | whenNotPaused isCallerValid isTotalMintedExceedsMaxSupply isValidAmount isNFTBalanceExceedsMaxMintPerAddress isWhitelisted |
+| └ | ownerMint | External ❗️ | 🛑  | onlyOwner isTotalMintedExceedsMaxSupply isNFTBalanceExceedsMaxMintPerAddress |
+| └ | _batchMintNFT | Private 🔐 | 🛑  | |
+| └ | _mintNFT | Private 🔐 | 🛑  | isTokenIdValid |
+| └ | setMintPrice | External ❗️ | 🛑  | onlyOwner |
+| └ | setWithdrawalRecipient | External ❗️ | 🛑  | onlyOwner |
+| └ | setBaseTokenURI | External ❗️ | 🛑  | onlyOwner |
+| └ | setContractURI | External ❗️ | 🛑  | onlyOwner |
 | └ | tokenURI | Public ❗️ |   | isTokenExist |
-| └ | setMerkleRoot | Public ❗️ | 🛑  | onlyOwner |
+| └ | setMerkleRoot | External ❗️ | 🛑  | onlyOwner |
 | └ | pause | External ❗️ | 🛑  | onlyOwner |
 | └ | unpause | External ❗️ | 🛑  | onlyOwner |
-| └ | withdraw | Public ❗️ | 🛑  | onlyOwner nonReentrant isValidRecipient isBalanceEnough |
-| └ | withdrawAll | Public ❗️ | 🛑  | onlyOwner isValidRecipient isBalanceNotZero |
-| └ | _withdraw | Internal 🔒 | 🛑  | |
+| └ | enableBaseURIMode | External ❗️ | 🛑  | onlyOwner |
+| └ | disableBaseURIMode | External ❗️ | 🛑  | onlyOwner |
+| └ | withdraw | External ❗️ | 🛑  | onlyOwner nonReentrant isValidRecipient isBalanceEnough |
+| └ | withdrawAll | External ❗️ | 🛑  | onlyOwner isValidRecipient isBalanceNotZero |
+| └ | _withdraw | Private 🔐 | 🛑  | |
 | └ | getContractBalance | External ❗️ |   | onlyOwner |
 | └ | getMerkleRoot | External ❗️ |   | onlyOwner |
+| └ | getMaxMintPerAddress | External ❗️ |   | onlyOwner |
 | └ | isValidMerkleProof | Private 🔐 |   | |
+| └ | supportsInterface | Public ❗️ |   |NO❗️ |
+| └ | setRoyaltyInfo | Public ❗️ | 🛑  | onlyOwner |
 
 
 ### Legend
@@ -127,53 +140,178 @@ Sūrya is a utility tool for smart contract systems. It provides a number of vis
 #### Describe
 
 ```text
-
-❯ npx surya describe ./code/contracts/Land.sol
- +  Land (ERC721, ReentrancyGuard, Ownable, Pausable)
+$ npx surya describe code/contracts/Land.sol       
+npx: installed 64 in 7.099s
+ +  Land (ERC721, ERC2981, ReentrancyGuard, Ownable, Pausable)
     - [Pub] <Constructor> #
        - modifiers: ERC721
     - [Ext] setPreviewURI #
        - modifiers: onlyOwner
-    - [Ext] revealNFT #
+    - [Ext] setMaxMintPerAddress #
        - modifiers: onlyOwner
-    - [Pub] mint ($)
-       - modifiers: whenNotPaused,isWhitelisted,notCap,isValidAmount
-    - [Pub] setMintPrice #
+    - [Ext] mint ($)
+       - modifiers: whenNotPaused,isCallerValid,isTotalMintedExceedsMaxSupply,isValidAmount,isNFTBalanceExceedsMaxMintPerAddress,isWhitelisted
+    - [Ext] batchMint ($)
+       - modifiers: whenNotPaused,isCallerValid,isTotalMintedExceedsMaxSupply,isValidAmount,isNFTBalanceExceedsMaxMintPerAddress,isWhitelisted
+    - [Ext] ownerMint #
+       - modifiers: onlyOwner,isTotalMintedExceedsMaxSupply,isNFTBalanceExceedsMaxMintPerAddress
+    - [Prv] _batchMintNFT #
+    - [Prv] _mintNFT #
+       - modifiers: isTokenIdValid
+    - [Ext] setMintPrice #
        - modifiers: onlyOwner
-    - [Pub] setWithdrawalRecipient #
+    - [Ext] setWithdrawalRecipient #
+       - modifiers: onlyOwner
+    - [Ext] setBaseTokenURI #
+       - modifiers: onlyOwner
+    - [Ext] setContractURI #
        - modifiers: onlyOwner
     - [Pub] tokenURI
        - modifiers: isTokenExist
-    - [Pub] setMerkleRoot #
+    - [Ext] setMerkleRoot #
        - modifiers: onlyOwner
     - [Ext] pause #
        - modifiers: onlyOwner
     - [Ext] unpause #
        - modifiers: onlyOwner
-    - [Pub] withdraw #
+    - [Ext] enableBaseURIMode #
+       - modifiers: onlyOwner
+    - [Ext] disableBaseURIMode #
+       - modifiers: onlyOwner
+    - [Ext] withdraw #
        - modifiers: onlyOwner,nonReentrant,isValidRecipient,isBalanceEnough
-    - [Pub] withdrawAll #
+    - [Ext] withdrawAll #
        - modifiers: onlyOwner,isValidRecipient,isBalanceNotZero
-    - [Int] _withdraw #
+    - [Prv] _withdraw #
     - [Ext] getContractBalance
        - modifiers: onlyOwner
     - [Ext] getMerkleRoot
        - modifiers: onlyOwner
+    - [Ext] getMaxMintPerAddress
+       - modifiers: onlyOwner
     - [Prv] isValidMerkleProof
+    - [Pub] supportsInterface
+    - [Pub] setRoyaltyInfo #
+       - modifiers: onlyOwner
 
 
  ($) = payable function
  # = non-constant function
-
+  
 ```
 
 ### Coverage
 
-NB: there are no tests included in the original repository.
+No coverage available.
 
 ### Tests
 
-NB: there are no tests included in the original repository.
+```text
+$ npm run test                                   
+
+> casinoverse-land@1.0.0 test /home/daniel/Development/github.com/akiratechhq/review-casinoverse-land-2022-08/code
+> hardhat test
+
+
+
+  Land
+    deployment
+      ✔ deployer is owner
+      ✔ should return the expected name and symbol
+      ✔ should return MAX_SUPPLY
+      ✔ should return withdrawalRecipient address
+      ✔ should return the initial base uri
+      ✔ should return the uri suffix
+      ✔ should return merkle root
+      ✔ should return max mint per wallet address
+    setMintingPrice
+      ✔ should return mintPrice
+      ✔ should be able to set new minting price
+      ✔ should emit event MintPriceChanged
+    setMerkleRoot
+      ✔ should be able to set new merkle root
+      ✔ should emit event MerkleRootChanged (38ms)
+    setWithdrawalRecipient
+      ✔ sould be able to set new recipient address
+      ✔ should emit event WithdrawalRecipientChanged
+    setMaxMintPerAddress
+      ✔ sould be able to set new max mint per wallet address (154ms)
+      ✔ sould emit event MaxMintPerAddressChanged
+    setBaseTokenURI
+      ✔ sould be able to set new base token uri
+      ✔ sould emit event BaseTokenURIChanged
+    getContractBalance
+      ✔ sould return contract balance
+    pausing
+      ✔ should return if contract is paused
+      ✔ should be able to pause contract
+      ✔ should be able to unpause contract
+    enable disable base uri mode
+      ✔ should be able to enable base uri mode
+      ✔ should be able to disable base uri mode
+      ✔ should emit event BaseURIModeChanged
+      ✔ should return base uri if base uri mode is true
+      ✔ should return token specific uri if base uri mode is false (76ms)
+      ✔ should return preview uri if token uri is empty
+    batch minting
+      ✔ should be able to batch mint nft
+      ✔ should emit event NFTBatchMint
+      ✔ should be able to batch mint nft from using contract if owner (97ms)
+      ✔ should not be able to batch mint if contract is paused, should be reverted with error message 'Pausable: paused' (42ms)
+      ✔ duplicate token id, should be reverted with error message 'ERC721: token already minted'
+      ✔ token id should not exceed max supply, should be reverted with error message 'Invalid token id'
+      ✔ invalid mint price amount, should be reverted with error message 'Invalid Amount'
+      ✔ maxed supply, should be reverted with error message 'Max Reached' (101ms)
+      ✔ max mint per address, should be reverted with error message 'Max nft per address reached'
+      ✔ not whitelisted, should be reverted with error message 'Not on whitelist'
+      ✔ should not allow contract to call batch mint, should be reverted with error message 'Not allowed' (41ms)
+    owner minting
+      ✔ should be able to owner mint nft
+      ✔ should emit event NFTBatchMint
+      ✔ duplicate token id, should be reverted with error message 'ERC721: token already minted'
+      ✔ token id should not exceed max supply, should be reverted with error message 'Invalid token id'
+      ✔ maxed supply, should be reverted with error message 'Max Reached' (86ms)
+      ✔ max mint per address, should be reverted with error message 'Max nft per address reached'
+    minting
+      ✔ should be able to mint nft
+      ✔ should emit event NFTSingleMint
+      ✔ should be able to mint nft using contract if owner (55ms)
+      ✔ should be able to mint nft with different accs (316ms)
+      ✔ token id should not exceed max supply, should be reverted with error message 'Invalid token id'
+      ✔ token already minted, should be reverted with error message 'ERC721: token already minted'
+      ✔ should not be able to mint if contract is paused, should be reverted with error message 'Pausable: paused'
+      ✔ maxed supply, should be reverted with error message 'Max Reached' (89ms)
+      ✔ invalid mint price amount, should be reverted with error message 'Invalid Amount'
+      ✔ not whitelisted, should be reverted with error message 'Not on whitelist'
+      ✔ max mint per address, should be reverted with error message 'Max nft per address reached' (77ms)
+      ✔ should not allow contract to call mint, should be reverted with error message 'Not allowed'
+    withdrawAll
+      ✔ should be able to withdraw all balance (79ms)
+      ✔ should emit event Withdraw (75ms)
+      ✔ invalid recipient, should be reverted with error message 'Invalid Recipient'
+      ✔ invalid balance, should be reverted with error message 'No Balance'
+      ✔ caller is not owner, should be reverted with errror message 'Ownable: caller is not the owner'
+    withdraw
+      ✔ should be able to withdraw balance (49ms)
+      ✔ should be able to withdraw balance (49ms)
+      ✔ should be able to withdraw all balance (38ms)
+      ✔ invalid recipient, should be reverted with error message 'Invalid Recipient'
+      ✔ invalid balance, should be reverted with error message 'Not Enough Balance'
+      ✔ caller is not owner, should be reverted with errror message 'Ownable: caller is not the owner'
+    royalty info
+      ✔ should return current royalty info
+      ✔ should be able to set new royalty info
+      ✔ should emit event RoyaltyInfoChanged
+    setContractURI
+      ✔ should be able to set new contract URI
+      ✔ should emit event ContractURIChanged
+    setPreviewURI
+      ✔ should be able to set new preview URI
+      ✔ should emit event PreviewURIChanged
+
+
+  76 passing (9s)
+```
 
 ## License
 
