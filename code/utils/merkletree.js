@@ -1,17 +1,18 @@
 const { MerkleTree } = require('merkletreejs');
 const keccak256 = require("keccak256");
 
-let merkleTree;
-
-function generateMerkleRoot(addresses) {
+function generateMerkle(addresses) {
     const merkleLeaves = addresses.map(address => keccak256(address));
-    merkleTree = new MerkleTree(merkleLeaves, keccak256, { sortPairs: true });
+    const merkleTree = new MerkleTree(merkleLeaves, keccak256, { sortPairs: true });
     const merkleRoot = merkleTree.getRoot().toString("hex");
 
-    return buf2hex(merkleRoot);
+    return {
+        root: buf2hex(merkleRoot),
+        tree: merkleTree
+    }
 }
 
-function generateProof(address) {
+function generateProof(merkleTree, address) {
     const leaf = keccak256(address);
     const bufProof = merkleTree.getProof(leaf);
     const proof = bufProof.map(buf => buf2hex(buf.data));
@@ -24,6 +25,6 @@ function buf2hex(buf) {
 }
 
 module.exports = {
-    generateMerkleRoot,
+    generateMerkle,
     generateProof
 }

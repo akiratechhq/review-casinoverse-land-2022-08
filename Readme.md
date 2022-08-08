@@ -73,7 +73,7 @@
 - **Lead reviewer** Daniel Luca ([@cleanunicorn](https://twitter.com/cleanunicorn))
 - **Reviewers** Daniel Luca ([@cleanunicorn](https://twitter.com/cleanunicorn)), Andrei Simion ([@andreiashu](https://twitter.com/andreiashu))
 - **Repository**: [Casinoverse Land](git@github.com:casinometaverse/casinoverse-land.git)
-- **Commit hash** `91140addb06bf9df3ad3ed38ea0509406c0eafb9`
+- **Commit hash** `bf607afe5ff68b91990649567347f333bb27f6be`
 - **Technologies**
   - Solidity
   - Node.JS
@@ -103,7 +103,7 @@ The second week was ...
 
 ## Scope
 
-The initial review focused on the [Casinoverse Land](git@github.com:casinometaverse/casinoverse-land.git) repository, identified by the commit hash `91140addb06bf9df3ad3ed38ea0509406c0eafb9`.
+The initial review focused on the [Casinoverse Land](git@github.com:casinometaverse/casinoverse-land.git) repository, identified by the commit hash `bf607afe5ff68b91990649567347f333bb27f6be`.
 
 We focused on manually reviewing the codebase, searching for security issues such as, but not limited to, re-entrancy problems, transaction ordering, block timestamp dependency, exception handling, call stack depth limitation, integer overflow/underflow, self-destructible contracts, unsecured balance, use of origin, costly gas patterns, architectural problems, code readability.
 
