@@ -55,10 +55,11 @@
      - [Increase the number of tests](#increase-the-number-of-tests)
  - [Issues](#issues)
      - [Whitelisted addresses can mint more than maxMintPerAddress](#whitelisted-addresses-can-mint-more-than-maxmintperaddress)
+     - [Modifier isValidAmount should check for strict equality](#modifier-isvalidamount-should-check-for-strict-equality)
      - [Some methods should be locked while the sale is active](#some-methods-should-be-locked-while-the-sale-is-active)
      - [Simplify withdraw and withdrawAll by sending the funds directly to withdrawalRecipient](#simplify-withdraw-and-withdrawall-by-sending-the-funds-directly-to-withdrawalrecipient)
-     - [Modifier isBalanceEnough is not needed](#modifier-isbalanceenough-is-not-needed)
      - [Use uint256 instead of uint8](#use-uint256-instead-of-uint8)
+     - [Modifier isBalanceEnough is not needed](#modifier-isbalanceenough-is-not-needed)
  - [Artifacts](#artifacts)
      - [Surya](#surya)
  - [Sūrya's Description Report](#suryas-description-report)
@@ -87,7 +88,7 @@
 | SEVERITY       |    OPEN    |    CLOSED    |
 |----------------|:----------:|:------------:|
 |  Informational  |  0  |  0  |
-|  Minor  |  1  |  0  |
+|  Minor  |  2  |  0  |
 |  Medium  |  3  |  0  |
 |  Major  |  1  |  0  |
 
@@ -209,6 +210,41 @@ modifier isNFTBalanceExceedsMaxMintPerAddress(address _address, uint256 _nftQty)
 ---
 
 
+### [Modifier `isValidAmount` should check for strict equality](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/7)
+![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Medium](https://img.shields.io/static/v1?label=Severity&message=Medium&color=FF9500&style=flat-square)
+
+**Description**
+
+When a user calls the methods `mint` or `batchMint`, they need to provide the correct amount of ether in order to buy the tokens. The ether amount is checked in the modifier `isValidAmount`.
+
+
+[code/contracts/Land.sol#L239-L247](https://github.com/akiratechhq/review-casinoverse-land-2022-08/blob/0c7e33d79303b0e0278aa10943580119b08c8778/code/contracts/Land.sol#L239-L247)
+```solidity
+    /**
+    * @dev Throws if amount is not enough
+    *
+    * @param _nftQty quantity of nft to mint
+    */
+    modifier isValidAmount(uint256 _nftQty) {
+        require(msg.value >= (mintPrice * _nftQty), "Invalid Amount");
+        _;
+    }
+```
+
+The check makes sure that the user sent the ether amount that is equal to or higher than the necessary one. 
+
+```solidity
+require(msg.value >= (mintPrice * _nftQty), "Invalid Amount");
+```
+
+**Recommendation**
+
+Change the check to make sure the amount sent is exactly equal to the required amount. Making this change will protect the users from making mistakes and sending too much ether into the contract.
+
+
+---
+
+
 ### [Some methods should be locked while the sale is active](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/6)
 ![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Medium](https://img.shields.io/static/v1?label=Severity&message=Medium&color=FF9500&style=flat-square)
 
@@ -279,6 +315,18 @@ There's only 1 valid account that funds can be sent to. Thus, the argument `_wit
 
 Remove modifiers, send directly to `_withdrawalRecipient`
 
+
+
+---
+
+
+### [Use `uint256` instead of `uint8`](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/5)
+![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Minor](https://img.shields.io/static/v1?label=Severity&message=Minor&color=FFCC00&style=flat-square)
+
+**Description**
+
+**Recommendation**
+
 **[optional] References**
 
 
@@ -286,11 +334,11 @@ Remove modifiers, send directly to `_withdrawalRecipient`
 
 
 ### [Modifier `isBalanceEnough` is not needed](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/1)
-![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Medium](https://img.shields.io/static/v1?label=Severity&message=Medium&color=FF9500&style=flat-square)
+![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Minor](https://img.shields.io/static/v1?label=Severity&message=Minor&color=FFCC00&style=flat-square)
 
 **Description**
 
-This is not needed since the tx will fail anyway if not enough eth is avaiable
+This is not needed since the tx will fail anyway if not enough ether is available.
 
 
 [code/contracts/Land.sol#L262-L270](https://github.com/akiratechhq/review-casinoverse-land-2022-08/blob/0c7e33d79303b0e0278aa10943580119b08c8778/code/contracts/Land.sol#L262-L270)
@@ -308,20 +356,9 @@ This is not needed since the tx will fail anyway if not enough eth is avaiable
 
 **Recommendation**
 
-**[optional] References**
+Remove modifier since this will not change how the contract functions.
 
-
----
-
-
-### [Use `uint256` instead of `uint8`](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/5)
-![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Minor](https://img.shields.io/static/v1?label=Severity&message=Minor&color=FFCC00&style=flat-square)
-
-**Description**
-
-**Recommendation**
-
-**[optional] References**
+Keep the modifier `isBalanceNotZero` since this will not create a "no-operation" transaction that doesn't transfer any ether.
 
 
 ---

@@ -14,6 +14,8 @@
 
 - [ ] use `uint256` instead of `uint8` / `uint16` / `uint32` / `uint64` / `uint128` unless there's a good reason to.
 
+- [ ] Fisher Yates - https://twitter.com/cleanunicorn/status/1445691819098992648
+
 ### Tests
 
 ```text
