@@ -49,7 +49,6 @@
  - [Details](#details)
  - [Issues Summary](#issues-summary)
  - [Executive summary](#executive-summary)
-     - [Week 1](#week-1)
  - [Scope](#scope)
  - [Recommendations](#recommendations)
      - [Increase the number of tests](#increase-the-number-of-tests)
@@ -57,8 +56,8 @@
      - [Whitelisted addresses can mint more than maxMintPerAddress](#whitelisted-addresses-can-mint-more-than-maxmintperaddress)
      - [Modifier isValidAmount should check for strict equality](#modifier-isvalidamount-should-check-for-strict-equality)
      - [Some methods should be locked while the sale is active](#some-methods-should-be-locked-while-the-sale-is-active)
+     - [Use uint256 instead of uint8 in loops](#use-uint256-instead-of-uint8-in-loops)
      - [Simplify withdraw and withdrawAll by sending the funds directly to withdrawalRecipient](#simplify-withdraw-and-withdrawall-by-sending-the-funds-directly-to-withdrawalrecipient)
-     - [Use uint256 instead of uint8](#use-uint256-instead-of-uint8)
      - [Modifier isBalanceEnough is not needed](#modifier-isbalanceenough-is-not-needed)
  - [Artifacts](#artifacts)
      - [Surya](#surya)
@@ -88,8 +87,8 @@
 | SEVERITY       |    OPEN    |    CLOSED    |
 |----------------|:----------:|:------------:|
 |  Informational  |  0  |  0  |
-|  Minor  |  2  |  0  |
-|  Medium  |  3  |  0  |
+|  Minor  |  3  |  0  |
+|  Medium  |  2  |  0  |
 |  Major  |  1  |  0  |
 
 ## Executive summary
@@ -97,16 +96,6 @@
 This report represents the results of the engagement with **Casino Metaverse** to review **Casinoverse Land**.
 
 The review was conducted over the course of **1 week** from **August the 1st to August the 5th, 2022**. A total of **5 person-days** were spent reviewing the code.
-
-### Week 1
-
-During the first week, we 
-
-- review code and start drafting some initial issues
-- create a Fisher Yates proof of concept
-- set up a meeting to discuss the issues
-- work on the report
-- present report
 
 ## Scope
 
@@ -275,8 +264,71 @@ Do not allow the methods to be called while the sale is active.
 ---
 
 
+### [Use `uint256` instead of `uint8` in loops](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/5)
+![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Minor](https://img.shields.io/static/v1?label=Severity&message=Minor&color=FFCC00&style=flat-square)
+
+**Description**
+
+The EVM works with 256bit/32byte words. For smaller data types, further operations are performed to downscale from 256 bits to the required lower bites type, and therefore having `uint8` as an iterator consumes more gas than keeping it to `uint256`.
+
+```solidity
+pragma solidity ^0.6.12;
+
+/**
+ * Show the difference in gas costs between a loop that uses a uint8 variable
+ * and one that uses uint256 variable.
+ * 
+ * Both contracts compiled with `Enable Optimization` set to 200 runs.
+ */
+
+contract LoopUint8 {
+    
+    address[] internal arr;
+
+    // 1st call; arr.length == 0: gas cost 42719
+    // 2nd call; arr.length == 1: gas cost 30322
+    // 3rd call; arr.length == 2: gas cost 32925
+    function add(address _new) public {
+        for (uint8 i = 0; i < arr.length; i++) {
+          if (arr[i] == _new) {
+            require(false, 'exists');
+          }
+        }
+        
+        arr.push(_new);
+    }
+}
+
+
+contract LoopUint256 {
+    
+    address[] internal arr;
+
+    // 1st call; arr.length == 0: gas cost 42713
+    // 2nd call; arr.length == 1: gas cost 30304
+    // 3rd call; arr.length == 2: gas cost 32895
+    function add(address _new) public {
+        for (uint256 i = 0; i < arr.length; i++) {
+          if (arr[i] == _new) {
+            require(false, 'exists');
+          }
+        }
+        
+        arr.push(_new);
+    }
+}
+```
+
+**Recommendation**
+
+Use `uint256` for the loop iterators.
+
+
+---
+
+
 ### [Simplify `withdraw` and `withdrawAll` by sending the funds directly to `withdrawalRecipient`](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/2)
-![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Medium](https://img.shields.io/static/v1?label=Severity&message=Medium&color=FF9500&style=flat-square)
+![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Minor](https://img.shields.io/static/v1?label=Severity&message=Minor&color=FFCC00&style=flat-square)
 
 **Description**
 
@@ -315,19 +367,6 @@ There's only 1 valid account that funds can be sent to. Thus, the argument `_wit
 
 Remove modifiers, send directly to `_withdrawalRecipient`
 
-
-
----
-
-
-### [Use `uint256` instead of `uint8`](https://github.com/akiratechhq/review-casinoverse-land-2022-08/issues/5)
-![Issue status: Open](https://img.shields.io/static/v1?label=Status&message=Open&color=5856D6&style=flat-square) ![Minor](https://img.shields.io/static/v1?label=Severity&message=Minor&color=FFCC00&style=flat-square)
-
-**Description**
-
-**Recommendation**
-
-**[optional] References**
 
 
 ---

@@ -167,7 +167,7 @@
             "assignee": null,
             "assignees": [],
             "author_association": "CONTRIBUTOR",
-            "body": "**Description**\r\n\r\n**Recommendation**\r\n\r\n**[optional] References**\r\n",
+            "body": "**Description**\r\n\r\nThe EVM works with 256bit/32byte words. For smaller data types, further operations are performed to downscale from 256 bits to the required lower bites type, and therefore having `uint8` as an iterator consumes more gas than keeping it to `uint256`.\r\n\r\n```solidity\r\npragma solidity ^0.6.12;\r\n\r\n/**\r\n * Show the difference in gas costs between a loop that uses a uint8 variable\r\n * and one that uses uint256 variable.\r\n * \r\n * Both contracts compiled with `Enable Optimization` set to 200 runs.\r\n */\r\n\r\ncontract LoopUint8 {\r\n    \r\n    address[] internal arr;\r\n\r\n    // 1st call; arr.length == 0: gas cost 42719\r\n    // 2nd call; arr.length == 1: gas cost 30322\r\n    // 3rd call; arr.length == 2: gas cost 32925\r\n    function add(address _new) public {\r\n        for (uint8 i = 0; i < arr.length; i++) {\r\n          if (arr[i] == _new) {\r\n            require(false, 'exists');\r\n          }\r\n        }\r\n        \r\n        arr.push(_new);\r\n    }\r\n}\r\n\r\n\r\ncontract LoopUint256 {\r\n    \r\n    address[] internal arr;\r\n\r\n    // 1st call; arr.length == 0: gas cost 42713\r\n    // 2nd call; arr.length == 1: gas cost 30304\r\n    // 3rd call; arr.length == 2: gas cost 32895\r\n    function add(address _new) public {\r\n        for (uint256 i = 0; i < arr.length; i++) {\r\n          if (arr[i] == _new) {\r\n            require(false, 'exists');\r\n          }\r\n        }\r\n        \r\n        arr.push(_new);\r\n    }\r\n}\r\n```\r\n\r\n**Recommendation**\r\n\r\nUse `uint256` for the loop iterators.\r\n",
             "closed_at": null,
             "comments": 0,
             "comments_url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/5/comments",
@@ -193,15 +193,6 @@
                     "name": "Minor",
                     "node_id": "LA_kwDOHv7cv88AAAABBT4Q5A",
                     "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/labels/Minor"
-                },
-                {
-                    "color": "6B08DC",
-                    "default": false,
-                    "description": null,
-                    "id": 4382921094,
-                    "name": "WIP",
-                    "node_id": "LA_kwDOHv7cv88AAAABBT4Rhg",
-                    "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/labels/WIP"
                 }
             ],
             "labels_url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/5/labels{/name}",
@@ -226,8 +217,8 @@
             "state": "open",
             "state_reason": null,
             "timeline_url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/5/timeline",
-            "title": "Use `uint256` instead of `uint8`",
-            "updated_at": "2022-08-08T11:25:15Z",
+            "title": "Use `uint256` instead of `uint8` in loops",
+            "updated_at": "2022-08-10T07:59:04Z",
             "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/5",
             "user": {
                 "avatar_url": "https://avatars.githubusercontent.com/u/547012?v=4",
@@ -432,22 +423,13 @@
                     "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/labels/Report"
                 },
                 {
-                    "color": "FF9500",
+                    "color": "FFCC00",
                     "default": false,
                     "description": null,
-                    "id": 4382920970,
-                    "name": "Medium",
-                    "node_id": "LA_kwDOHv7cv88AAAABBT4RCg",
-                    "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/labels/Medium"
-                },
-                {
-                    "color": "6B08DC",
-                    "default": false,
-                    "description": null,
-                    "id": 4382921094,
-                    "name": "WIP",
-                    "node_id": "LA_kwDOHv7cv88AAAABBT4Rhg",
-                    "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/labels/WIP"
+                    "id": 4382920932,
+                    "name": "Minor",
+                    "node_id": "LA_kwDOHv7cv88AAAABBT4Q5A",
+                    "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/labels/Minor"
                 }
             ],
             "labels_url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/2/labels{/name}",
@@ -473,7 +455,7 @@
             "state_reason": null,
             "timeline_url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/2/timeline",
             "title": "Simplify `withdraw` and `withdrawAll` by sending the funds directly to `withdrawalRecipient`",
-            "updated_at": "2022-08-10T05:35:54Z",
+            "updated_at": "2022-08-10T07:59:17Z",
             "url": "https://api.github.com/repos/akiratechhq/review-casinoverse-land-2022-08/issues/2",
             "user": {
                 "avatar_url": "https://avatars.githubusercontent.com/u/547012?v=4",
